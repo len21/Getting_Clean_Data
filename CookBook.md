@@ -47,9 +47,11 @@ There are 3 test files:
 * FinalData (Subset of FinalData)
 
 ## Final Output Data
-* A text file called "tidy_data.txt"" is a data set includes mean and standard deviation variables for the following variables , listed below.
-* It includes all three X, Y, Z directions are included.
-* All variables are of type num
+* A text file called "tidy_data.txt"" is a data set which calculates the average of each variable for each activity id and each subject id.
+* It includes all three X, Y, Z directions variables.
+* All average variables are of type num
+* All Id variables are of type int
+* Activity Name is type factor
 
 
 **There are 69 columns and the names are below:**
