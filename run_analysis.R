@@ -9,15 +9,15 @@
 # 5. Creates a second, independent tidy data set with the average of each variable for each activity and each subject. 
 
 ##########################################################################################################
-library(dplyr)
-library(data.table)
-library(reshape2) # load the reshape2 package (will be used in STEP 5)
-
 # Clean up workspace
 rm(list=ls())
 
 #set working directory to the location where the UCI HAR Dataset was unzipped
 setwd("C:\\Users\\Moira\\Documents\\DSClass\\DS3\\data\\UCI HAR Dataset")
+
+library(dplyr)
+library(data.table)
+library(reshape2) # load the reshape2 package (will be used in STEP 5)
 
 
 # Load all the various datasets so they can be work with
@@ -39,7 +39,7 @@ colnames(Test_Y)  = "ActivityId"
 colnames(Test_Subject) ="SubjectId"
 colnames(Train_Subject) ="SubjectId"
 
-## Rename all the columns using the feature label from the Feature file
+## Rename all the columns using info from the cookbook and feature file
 colnames(Train_X) = Features_Labels[,2]
 colnames(Test_X) = Features_Labels[,2]
 
@@ -54,7 +54,7 @@ TestData = cbind(Test_Subject, Test_Y ,Test_X )
 # STEP 1 :Combine training and test data to create a conbined data set
 CombinedData = rbind(TrainingData, TestData)
 
-# Create a vector for the column names from the CombinedData, which will be used
+# Create a list for the column names from the CombinedData, which will be used
 # to select the desired mean() & std() columns
 CombinedDataColNames  = colnames(CombinedData)
 
@@ -63,16 +63,15 @@ CombinedDataColNames  = colnames(CombinedData)
 logicalVector = (grepl("SubjectId",CombinedDataColNames) | grepl("ActivityId",CombinedDataColNames) |
                  grepl("-mean\\()",CombinedDataColNames) | grepl("-std\\()",CombinedDataColNames) )
 
-# Subset finalData table based on the logicalVector to keep only desired columns
+# creata a new table table based on the logicalVector to keep only desired columns
 FinalData = CombinedData[logicalVector==TRUE]
 
 # STEP 3 & 4: Add the Activity Type label from the text file in Activity_Labels
 FinalData = merge(Activity_Labels,FinalData,by='ActivityId',all.x=TRUE)
 
-# STEP 5: Creates a second, tidy data set with the mean for each variable for each activity and each subject.
-# create the tidy data set
+# STEP 5: Creates a tidy data set with the mean for each variable for each activity and each subject.
 MeltedData <- melt(FinalData, id=1:3)
 TidyData <- dcast(MeltedData, ActivityId + ActivityName + SubjectId  ~ variable, mean)
 
-## write out the file to the git location for syncing
+# write out the tidy data set to a file, to the git location for syncing back up to github
 write.table(TidyData, file = "C:\\Users\\Moira\\Getting_Clean_Data\\tidy_data.txt")
